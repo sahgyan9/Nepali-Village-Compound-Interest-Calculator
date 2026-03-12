@@ -41,7 +41,14 @@ export const TRANSLATIONS = {
     history: "Calculation History",
     noHistory: "No history yet.",
     delete: "Delete",
-    clearHistory: "Clear History"
+    clearHistory: "Clear History",
+    aboutTitle: "About Nepali Compound Interest Calculator",
+    aboutText: "This tool is specifically designed for the Nepali context, where interest is often calculated based on Bikram Sambat (BS) dates. Whether you are looking for a 'Village Compound Calculator' for local lending or a professional 'Nepali Interest Calculator' for personal finance, our app provides accurate results using standard Nepali calendar rules.",
+    faqTitle: "Frequently Asked Questions",
+    faq1Q: "What is a Village Compound Calculator?",
+    faq1A: "In many parts of Nepal, local lenders use a specific method of compounding interest monthly or annually. This calculator simplifies that process by allowing you to input the principal and monthly rate directly in BS dates.",
+    faq2Q: "How accurate is the Nepali Date conversion?",
+    faq2A: "We use the standard NepaliDateConverter library to ensure that Bikram Sambat dates are correctly handled, including leap years and varying month lengths in the BS calendar."
   },
   ne: {
     title: "नेपाली चक्रवृद्धि ब्याज क्याल्कुलेटर",
@@ -74,7 +81,14 @@ export const TRANSLATIONS = {
     history: "गणनाको इतिहास",
     noHistory: "अझै कुनै इतिहास छैन।",
     delete: "हटाउनुहोस्",
-    clearHistory: "इतिहास मेटाउनुहोस्"
+    clearHistory: "इतिहास मेटाउनुहोस्",
+    aboutTitle: "नेपाली चक्रवृद्धि ब्याज क्याल्कुलेटरको बारेमा",
+    aboutText: "यो उपकरण विशेष गरी नेपाली सन्दर्भको लागि डिजाइन गरिएको हो, जहाँ ब्याज प्रायः विक्रम संवत (BS) मितिहरूको आधारमा गणना गरिन्छ। चाहे तपाईं स्थानीय ऋणको लागि 'गाउँले ब्याज क्याल्कुलेटर' खोज्दै हुनुहुन्छ वा व्यक्तिगत वित्तको लागि व्यावसायिक 'नेपाली ब्याज क्याल्कुलेटर', हाम्रो एपले मानक नेपाली क्यालेन्डर नियमहरू प्रयोग गरेर सही नतिजाहरू प्रदान गर्दछ।",
+    faqTitle: "बारम्बार सोधिने प्रश्नहरू",
+    faq1Q: "गाउँले ब्याज क्याल्कुलेटर के हो?",
+    faq1A: "नेपालका धेरै भागहरूमा, स्थानीय ऋणदाताहरूले मासिक वा वार्षिक रूपमा ब्याज चक्रवृद्धि गर्ने विशिष्ट विधि प्रयोग गर्छन्। यो क्याल्कुलेटरले तपाईंलाई साँवा र मासिक दर सिधै BS मितिहरूमा इनपुट गर्न अनुमति दिएर त्यो प्रक्रियालाई सरल बनाउँछ।",
+    faq2Q: "नेपाली मिति परिवर्तन कत्तिको सही छ?",
+    faq2A: "हामी विक्रम संवत मितिहरू सही रूपमा ह्यान्डल गरिएको सुनिश्चित गर्न मानक NepaliDateConverter पुस्तकालय प्रयोग गर्छौं।"
   }
 };
 

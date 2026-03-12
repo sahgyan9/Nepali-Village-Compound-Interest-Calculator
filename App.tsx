@@ -665,7 +665,30 @@ const App: React.FC = () => {
           </div>
         )}
       </div>
-       <footer className="mt-8 text-center">
+      <div className="mt-12 max-w-4xl mx-auto px-4 pb-12">
+        <section className="bg-white/60 backdrop-blur-md rounded-2xl p-8 shadow-sm mb-8">
+          <h2 className="text-2xl font-bold text-indigo-900 mb-4">{(t as any).aboutTitle}</h2>
+          <p className="text-gray-700 leading-relaxed">
+            {(t as any).aboutText}
+          </p>
+        </section>
+
+        <section className="bg-white/60 backdrop-blur-md rounded-2xl p-8 shadow-sm">
+          <h2 className="text-2xl font-bold text-indigo-900 mb-6">{(t as any).faqTitle}</h2>
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-semibold text-indigo-800 mb-2">{(t as any).faq1Q}</h3>
+              <p className="text-gray-700">{(t as any).faq1A}</p>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-indigo-800 mb-2">{(t as any).faq2Q}</h3>
+              <p className="text-gray-700">{(t as any).faq2A}</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+       <footer className="mt-8 text-center pb-8">
         <p className="text-sm text-gray-200">
           {t.footer}
         </p>
