@@ -1,7 +1,5 @@
 {
-  "name": "Nepali Compound Interest Calculator | Village Interest Calculator",
-  "description": "The best Nepali Compound Interest Calculator for village and personal loans. Calculate interest using Nepali BS dates (Bikram Sambat) with monthly interest rates. Perfect for village compound interest calculations in Nepal.",
-  "Overwrite": true,
-  "TargetFile": "/metadata.json",
-  "toolSummary": "Overwriting metadata.json for SEO."
+  "name": "Village Calculator | Nepali Compound Interest",
+  "description": "Village Calculator - The best Nepali Compound Interest Calculator for village and personal loans. Calculate interest using Nepali BS dates (Bikram Sambat) with monthly interest rates.",
+  "requestFramePermissions": []
 }

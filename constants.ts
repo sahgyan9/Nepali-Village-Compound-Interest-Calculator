@@ -11,8 +11,8 @@ export const NEPALI_MONTHS: NepaliMonth[] = [
 
 export const TRANSLATIONS = {
   en: {
-    title: "Nepali Compound Interest Calculator",
-    description: "Calculate interest based on Bikram Sambat (BS) dates.",
+    title: "Village Calculator | Nepali Compound Interest",
+    description: "Calculate interest based on Bikram Sambat (BS) dates. Perfect for village loans.",
     principalLabel: "Principal Amount (रु)",
     npr: "NPR",
     startDateLabel: "Start Date (BS)",
@@ -51,7 +51,7 @@ export const TRANSLATIONS = {
     faq2A: "We use the standard NepaliDateConverter library to ensure that Bikram Sambat dates are correctly handled, including leap years and varying month lengths in the BS calendar."
   },
   ne: {
-    title: "नेपाली चक्रवृद्धि ब्याज क्याल्कुलेटर",
+    title: "गाउँले ब्याज क्याल्कुलेटर (Village Calculator)",
     description: "विक्रम संवत (BS) मितिहरूको आधारमा ब्याज गणना गर्नुहोस्।",
     principalLabel: "साँवा रकम (रु)",
     npr: "नेपाली रुपैयाँ",
