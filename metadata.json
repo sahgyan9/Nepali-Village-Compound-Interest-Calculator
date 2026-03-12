@@ -1,0 +1,5 @@
+{
+  "name": "Nepali Compound Interest Calculator",
+  "description": "A web application to calculate compound interest based on Nepali (Bikram Sambat) dates. Users can input principal amount, start date, end date, and a monthly interest rate to see the total accumulated amount and interest earned.",
+  "requestFramePermissions": []
+}
