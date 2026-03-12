@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { NepaliMonth } from './types';
+import { NepaliMonth, Language, TranslationStrings } from './types';
 
 export const NEPALI_MONTHS: NepaliMonth[] = [
   { value: 1, name: 'Baishakh', neName: 'बैशाख' }, { value: 2, name: 'Jestha', neName: 'जेठ' }, { value: 3, name: 'Ashadh', neName: 'असार' },
@@ -9,7 +9,7 @@ export const NEPALI_MONTHS: NepaliMonth[] = [
   { value: 10, name: 'Magh', neName: 'माघ' }, { value: 11, name: 'Falgun', neName: 'फागुन' }, { value: 12, name: 'Chaitra', neName: 'चैत' }
 ];
 
-export const TRANSLATIONS = {
+export const TRANSLATIONS: Record<Language, TranslationStrings> = {
   en: {
     title: "Village Calculator | Nepali Compound Interest",
     description: "Calculate interest based on Bikram Sambat (BS) dates. Perfect for village loans.",

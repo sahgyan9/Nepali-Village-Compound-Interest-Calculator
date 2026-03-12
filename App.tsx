@@ -2,59 +2,14 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { toPng } from 'html-to-image';
 import NepaliDateInput from './components/NepaliDateInput';
-import { NepaliDateValue, CalculationResult, DurationYMD, Language } from './types';
-import { CalendarIcon, CurrencyNPRIcon, PercentIcon, DEFAULT_NEPALI_YEAR, DEFAULT_NEPALI_MONTH, DEFAULT_NEPALI_DAY, NEPALI_YEAR_START, NEPALI_YEAR_END, TRANSLATIONS, NEPALI_MONTHS } from './constants';
-
-// Helper to get initial BS Date. Ensures window.NepaliDate is available.
-const getInitialBsDate = (): NepaliDateValue => {
-  if (window.NepaliDate) {
-    const bsDateTodayRaw = new window.NepaliDate().getBS(); // Gets current BS date
-    return {
-      year: bsDateTodayRaw.year,
-      month: bsDateTodayRaw.month + 1, // Convert 0-indexed month from getBS() to 1-indexed
-      day: bsDateTodayRaw.date, // Property is 'date' from getBS()
-    };
-  }
-  // Fallback if NepaliDate is not loaded
-  console.warn("NepaliDate library not loaded at getInitialBsDate, using fallback.");
-  return { year: DEFAULT_NEPALI_YEAR, month: DEFAULT_NEPALI_MONTH, day: DEFAULT_NEPALI_DAY };
-};
-
-// Helper to get days in a specific Nepali month (BS)
-// bsMonth is 1-indexed (1 for Baishakh, ..., 12 for Chaitra)
-// This function aims for accuracy for UI or other precise BS date needs,
-// but is NOT used for borrowing days in calculateNepaliYMDDifference anymore.
-const getDaysInNepaliMonthBS = (bsYear: number, bsMonth: number): number => {
-  if (typeof window.NepaliDate !== 'function') {
-    console.warn('NepaliDate constructor (global) not available for getDaysInNepaliMonthBS.');
-    return 32; // Fallback to a safe maximum
-  }
-  try {
-    if (isNaN(bsYear) || isNaN(bsMonth) || bsMonth < 1 || bsMonth > 12 || bsYear < NEPALI_YEAR_START || bsYear > NEPALI_YEAR_END) {
-        console.warn(`Invalid year/month provided to getDaysInNepaliMonthBS (year: ${bsYear}, month: ${bsMonth}). Year must be between ${NEPALI_YEAR_START}-${NEPALI_YEAR_END}.`);
-        return 32; // Fallback for invalid inputs
-    }
-    const nepaliDateInstance = new window.NepaliDate();
-    if (nepaliDateInstance && typeof nepaliDateInstance.getDaysInMonth === 'function') {
-      const days = nepaliDateInstance.getDaysInMonth(bsYear, bsMonth - 1); // month - 1 for 0-indexed
-      if (typeof days === 'number' && !isNaN(days) && days >= 1 && days <= 32) {
-          return days;
-      } else {
-          console.warn(`getDaysInNepaliMonthBS: NepaliDate.getDaysInMonth(${bsYear}, ${bsMonth-1}) returned invalid value: ${days}. Using fallback 32.`);
-          return 32; // Fallback if library returns unexpected value
-      }
-    } else {
-      console.warn('NepaliDate instance created, but getDaysInMonth method is not available for getDaysInNepaliMonthBS. Using fallback 32.');
-      return 32; // Fallback
-    }
-  } catch (e) {
-    console.error('Error in getDaysInNepaliMonthBS:', e);
-    return 32; // Fallback in case of any error
-  }
-};
+import { NepaliDateValue, CalculationResult, CalculationHistoryItem, DurationYMD, Language } from './types';
+import { CalendarIcon, CurrencyNPRIcon, PercentIcon, TRANSLATIONS, NEPALI_MONTHS } from './constants';
+import { getTodayBS, safeLocalStorageGet } from './utils/nepaliDate';
 
 // Calculates difference between two Nepali dates in years, months, and days
 // Uses a 30-day month assumption for borrowing days.
+
+
 const calculateNepaliYMDDifference = (
   startDateVal: NepaliDateValue,
   endDateVal: NepaliDateValue
@@ -101,8 +56,8 @@ const calculateNepaliYMDDifference = (
 const STORAGE_KEY = 'nepali_interest_calc_state';
 
 const App: React.FC = () => {
-  // Load persisted state
-  const savedState = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  // Load persisted state safely (avoids crash from corrupted localStorage)
+  const savedState = safeLocalStorageGet<Record<string, any>>(STORAGE_KEY, {});
 
   const [language, setLanguage] = useState<Language>(savedState.language || 'en');
   const t = TRANSLATIONS[language];
@@ -116,8 +71,8 @@ const App: React.FC = () => {
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isNepaliDateReady, setIsNepaliDateReady] = useState<boolean>(false);
-  const [history, setHistory] = useState<any[]>([]);
-  const [exportItem, setExportItem] = useState<any | null>(null);
+  const [history, setHistory] = useState<CalculationHistoryItem[]>([]);
+  const [exportItem, setExportItem] = useState<CalculationHistoryItem | null>(null);
   const exportRef = useRef<HTMLDivElement>(null);
 
   // Fetch history from backend
@@ -148,7 +103,7 @@ const App: React.FC = () => {
     }
   };
 
-  const loadHistoryItem = (item: any) => {
+  const loadHistoryItem = (item: CalculationHistoryItem) => {
     setPrincipal(item.principal.toString());
     setMonthlyInterestRate(item.monthlyInterestRate.toString());
     setStartDate(item.startDate);
@@ -157,7 +112,7 @@ const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const downloadHistoryItem = async (item: any) => {
+  const downloadHistoryItem = async (item: CalculationHistoryItem) => {
     setExportItem(item);
     // Wait for state update and render
     setTimeout(async () => {
@@ -197,7 +152,7 @@ const App: React.FC = () => {
   }, [language, principal, monthlyInterestRate, startDate, endDate]);
 
   const formatNumber = (num: number | string) => {
-    return num.toLocaleString('en-NP');
+    return num.toLocaleString('en-IN');
   };
 
   const formatDuration = (duration: DurationYMD) => {
@@ -273,7 +228,6 @@ const App: React.FC = () => {
           totalAmount: initialPrincipal,
           totalInterest: 0,
           durationYMD,
-          durationString: "", // Not used anymore
         });
         return;
       }
@@ -302,11 +256,10 @@ const App: React.FC = () => {
       const totalInterest = interestFromFullYears + interestForRemainingPeriod;
       const totalAmount = initialPrincipal + totalInterest;
 
-      const newResult = {
+      const newResult: CalculationResult = {
         totalAmount: parseFloat(totalAmount.toFixed(2)),
         totalInterest: parseFloat(totalInterest.toFixed(2)),
         durationYMD,
-        durationString: "", // Not used anymore
       };
 
       setResult(newResult);
@@ -361,19 +314,21 @@ const App: React.FC = () => {
 
   if (!isNepaliDateReady) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="text-xl font-semibold text-gray-700">{t.loading}</div>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 animated-bg">
+        <div className="loading-spinner mb-4"></div>
+        <div className="text-lg font-medium text-white/90">{t.loading}</div>
       </div>
     );
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 py-8 px-4 flex flex-col items-center">
-      <div className="bg-white shadow-2xl rounded-xl p-6 md:p-10 w-full max-w-2xl">
+    <main className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 animated-bg py-8 px-4 flex flex-col items-center">
+      <article className="bg-white/95 glass-card shadow-2xl rounded-2xl p-6 md:p-10 w-full max-w-2xl">
         <div className="flex justify-end mb-4">
           <button
             onClick={() => setLanguage(language === 'en' ? 'ne' : 'en')}
             className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-full hover:bg-indigo-100 transition-colors border border-indigo-200"
+            aria-label={language === 'en' ? 'Switch to Nepali language' : 'Switch to English language'}
           >
             {language === 'en' ? 'नेपालीमा हेर्नुहोस्' : 'View in English'}
           </button>
@@ -398,7 +353,7 @@ const App: React.FC = () => {
                 id="principal"
                 value={principal}
                 onChange={(e) => setPrincipal(e.target.value)}
-                className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md"
+                className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 pr-12 py-2.5 sm:text-sm border border-gray-300 rounded-lg bg-gray-50/50"
                 placeholder="e.g., 100000"
                 min="0"
                 step="any"
@@ -422,7 +377,7 @@ const App: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700">{t.endDateLabel}</label>
               <button
                 type="button"
-                onClick={() => setEndDate(getInitialBsDate())}
+                onClick={() => setEndDate(getTodayBS())}
                 className="text-xs font-medium text-indigo-600 hover:text-indigo-500 flex items-center"
               >
                 <CalendarIcon className="w-3 h-3 mr-1" />
@@ -450,7 +405,7 @@ const App: React.FC = () => {
                 id="interest-rate"
                 value={monthlyInterestRate}
                 onChange={(e) => setMonthlyInterestRate(e.target.value)}
-                className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 rounded-md"
+                className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 pr-12 py-2.5 sm:text-sm border border-gray-300 rounded-lg bg-gray-50/50"
                 placeholder="e.g., 1.5"
                 min="0"
                 step="any"
@@ -464,7 +419,7 @@ const App: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full flex items-center justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-105"
+            className="btn-glow w-full flex items-center justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-lg text-base font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all transform hover:scale-[1.02] active:scale-[0.98]"
             aria-live="polite"
           >
             <CalendarIcon className="w-5 h-5 mr-2" />
@@ -479,7 +434,7 @@ const App: React.FC = () => {
         )}
 
         {result && !error && (
-          <div ref={resultRef} className="mt-8 pt-6 border-t border-gray-200 bg-white p-6 rounded-xl">
+          <div ref={resultRef} className="mt-8 pt-6 border-t border-gray-200 bg-white p-6 rounded-xl animate-fade-slide-up">
             <div className="flex justify-between items-center mb-6 no-export">
               <h2 className="text-2xl font-semibold text-gray-800">{t.resultsHeading}</h2>
               <button
@@ -520,15 +475,15 @@ const App: React.FC = () => {
             </div>
 
             <div className="space-y-3 bg-indigo-50 p-6 rounded-lg shadow-inner border border-indigo-100">
-              <div className="flex justify-between items-center text-lg">
+              <div className="flex justify-between items-center text-lg result-row">
                 <span className="text-gray-600">{t.interestPeriod}</span>
                 <span className="font-semibold text-indigo-700">{formatDuration(result.durationYMD)}</span>
               </div>
-              <div className="flex justify-between items-center text-lg">
+              <div className="flex justify-between items-center text-lg result-row">
                 <span className="text-gray-600">{t.totalInterest}</span>
                 <span className="font-semibold text-green-600">रु {formatNumber(result.totalInterest)}</span>
               </div>
-              <div className="flex justify-between items-center text-xl pt-2 border-t border-indigo-200">
+              <div className="flex justify-between items-center text-xl pt-3 border-t border-indigo-200 result-row">
                 <span className="text-gray-700 font-medium">{t.totalAmount}</span>
                 <span className="font-bold text-indigo-800 text-2xl">रु {formatNumber(result.totalAmount)}</span>
               </div>
@@ -549,7 +504,7 @@ const App: React.FC = () => {
             </h2>
             <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
               {history.map((item) => (
-                <div key={item.id} className="bg-white/80 backdrop-blur-sm p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow relative group">
+                <div key={item.id} className="history-card bg-white p-4 rounded-xl border border-gray-200 shadow-sm relative group">
                   <div 
                     className="cursor-pointer"
                     onClick={() => loadHistoryItem(item)}
@@ -617,7 +572,7 @@ const App: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
+      </article>
 
       {/* Hidden export container for history items */}
       <div className="fixed -left-[9999px] top-0">
@@ -667,33 +622,33 @@ const App: React.FC = () => {
       </div>
       <div className="mt-12 max-w-4xl mx-auto px-4 pb-12">
         <section className="bg-white/60 backdrop-blur-md rounded-2xl p-8 shadow-sm mb-8">
-          <h2 className="text-2xl font-bold text-indigo-900 mb-4">{(t as any).aboutTitle}</h2>
+          <h2 className="text-2xl font-bold text-indigo-900 mb-4">{t.aboutTitle}</h2>
           <p className="text-gray-700 leading-relaxed">
-            {(t as any).aboutText}
+            {t.aboutText}
           </p>
         </section>
 
         <section className="bg-white/60 backdrop-blur-md rounded-2xl p-8 shadow-sm">
-          <h2 className="text-2xl font-bold text-indigo-900 mb-6">{(t as any).faqTitle}</h2>
+          <h2 className="text-2xl font-bold text-indigo-900 mb-6">{t.faqTitle}</h2>
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-semibold text-indigo-800 mb-2">{(t as any).faq1Q}</h3>
-              <p className="text-gray-700">{(t as any).faq1A}</p>
+              <h3 className="text-lg font-semibold text-indigo-800 mb-2">{t.faq1Q}</h3>
+              <p className="text-gray-700">{t.faq1A}</p>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-indigo-800 mb-2">{(t as any).faq2Q}</h3>
-              <p className="text-gray-700">{(t as any).faq2A}</p>
+              <h3 className="text-lg font-semibold text-indigo-800 mb-2">{t.faq2Q}</h3>
+              <p className="text-gray-700">{t.faq2A}</p>
             </div>
           </div>
         </section>
       </div>
 
        <footer className="mt-8 text-center pb-8">
-        <p className="text-sm text-gray-200">
+        <p className="text-sm text-white/70 bg-white/10 backdrop-blur-sm inline-block px-6 py-2 rounded-full">
           {t.footer}
         </p>
       </footer>
-    </div>
+    </main>
   );
 };
 

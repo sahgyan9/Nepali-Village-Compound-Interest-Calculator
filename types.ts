@@ -25,7 +25,6 @@ export interface CalculationResult {
   totalAmount: number;
   totalInterest: number;
   durationYMD: DurationYMD;
-  durationString: string; // e.g., "X Saal Y Mahina Z Din"
 }
 
 export interface NepaliMonth {
@@ -33,3 +32,54 @@ export interface NepaliMonth {
   name: string;
   neName: string;
 }
+
+export interface CalculationHistoryItem {
+  id: string;
+  timestamp: string;
+  principal: number;
+  monthlyInterestRate: number;
+  startDate: NepaliDateValue;
+  endDate: NepaliDateValue;
+  result: CalculationResult;
+}
+
+export interface TranslationStrings {
+  title: string;
+  description: string;
+  principalLabel: string;
+  npr: string;
+  startDateLabel: string;
+  endDateLabel: string;
+  today: string;
+  interestRateLabel: string;
+  calculateBtn: string;
+  resultsHeading: string;
+  interestPeriod: string;
+  totalInterest: string;
+  totalAmount: string;
+  note: string;
+  footer: string;
+  saal: string;
+  mahina: string;
+  din: string;
+  loading: string;
+  errorPrincipal: string;
+  errorRate: string;
+  errorLibrary: string;
+  errorConversion: string;
+  errorEndDate: string;
+  errorGeneral: string;
+  savePng: string;
+  bs: string;
+  history: string;
+  noHistory: string;
+  delete: string;
+  clearHistory: string;
+  aboutTitle: string;
+  aboutText: string;
+  faqTitle: string;
+  faq1Q: string;
+  faq1A: string;
+  faq2Q: string;
+  faq2A: string;
+}
