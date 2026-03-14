@@ -314,10 +314,39 @@ const App: React.FC = () => {
 
   if (!isNepaliDateReady) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 animated-bg">
-        <div className="loading-spinner mb-4"></div>
-        <div className="text-lg font-medium text-white/90">{t.loading}</div>
-      </div>
+      <main className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 animated-bg py-8 px-4 flex flex-col items-center">
+        <article className="bg-white/95 glass-card shadow-2xl rounded-2xl p-6 md:p-10 w-full max-w-2xl" id="calculator">
+          <header className="mb-8 text-center">
+            <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+              {t.title}
+            </h1>
+            <p className="text-gray-600 mt-2">{t.description}</p>
+          </header>
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="loading-spinner mb-4"></div>
+            <div className="text-base font-medium text-gray-500">{t.loading}</div>
+          </div>
+        </article>
+        <div className="mt-12 w-full max-w-4xl px-4 pb-12">
+          <section className="bg-white/60 backdrop-blur-md rounded-2xl p-8 shadow-sm mb-8" id="about">
+            <h2 className="text-2xl font-bold text-indigo-900 mb-4">{t.aboutTitle}</h2>
+            <p className="text-gray-700 leading-relaxed">{t.aboutText}</p>
+          </section>
+          <section className="bg-white/60 backdrop-blur-md rounded-2xl p-8 shadow-sm" id="faq">
+            <h2 className="text-2xl font-bold text-indigo-900 mb-6">{t.faqTitle}</h2>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold text-indigo-800 mb-2">{t.faq1Q}</h3>
+                <p className="text-gray-700">{t.faq1A}</p>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-indigo-800 mb-2">{t.faq2Q}</h3>
+                <p className="text-gray-700">{t.faq2A}</p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
     );
   }
   
