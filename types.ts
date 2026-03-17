@@ -82,4 +82,9 @@ export interface TranslationStrings {
   faq1A: string;
   faq2Q: string;
   faq2A: string;
+  developerTitle: string;
+  developerNameLabel: string;
+  developerEmailLabel: string;
+  developerWebsiteLabel: string;
+  developerEducationLabel: string;
 }

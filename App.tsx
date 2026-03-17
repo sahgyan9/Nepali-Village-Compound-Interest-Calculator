@@ -345,6 +345,38 @@ const App: React.FC = () => {
               </div>
             </div>
           </section>
+
+          {/* Developer Section */}
+          <section className="bg-white/60 backdrop-blur-md rounded-2xl p-8 shadow-sm mt-8" id="developer">
+            <h2 className="text-2xl font-bold text-indigo-900 mb-6">{t.developerTitle}</h2>
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+              <div className="flex-shrink-0">
+                <img
+                  src="/image.png"
+                  alt="Gyan Kumar Sah"
+                  className="w-28 h-28 rounded-full object-cover border-4 border-indigo-200 shadow-lg"
+                />
+              </div>
+              <div className="flex-1 text-center sm:text-left space-y-3">
+                <div>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-indigo-500">{t.developerNameLabel}</span>
+                  <p className="text-xl font-bold text-gray-800">Gyan Kumar Sah</p>
+                </div>
+                <div>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-indigo-500">{t.developerEmailLabel}</span>
+                  <p className="text-gray-700"><a href="mailto:sahgyan9@gmail.com" className="text-indigo-600 hover:text-indigo-800 hover:underline transition-colors">sahgyan9@gmail.com</a></p>
+                </div>
+                <div>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-indigo-500">{t.developerWebsiteLabel}</span>
+                  <p className="text-gray-700"><a href="https://friendly-learning-srmap.lovable.app/" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-800 hover:underline transition-colors">friendly-learning-srmap.lovable.app</a></p>
+                </div>
+                <div>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-indigo-500">{t.developerEducationLabel}</span>
+                  <p className="text-gray-700">Undergraduate in Physics</p>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </main>
     );
@@ -670,6 +702,38 @@ const App: React.FC = () => {
             </div>
           </div>
         </section>
+
+          {/* Developer Section */}
+          <section className="bg-white/60 backdrop-blur-md rounded-2xl p-8 shadow-sm mt-8" id="developer-main">
+            <h2 className="text-2xl font-bold text-indigo-900 mb-6">{t.developerTitle}</h2>
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+              <div className="flex-shrink-0">
+                <img
+                  src="/image.png"
+                  alt="Gyan Kumar Sah"
+                  className="w-28 h-28 rounded-full object-cover border-4 border-indigo-200 shadow-lg"
+                />
+              </div>
+              <div className="flex-1 text-center sm:text-left space-y-3">
+                <div>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-indigo-500">{t.developerNameLabel}</span>
+                  <p className="text-xl font-bold text-gray-800">Gyan Kumar Sah</p>
+                </div>
+                <div>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-indigo-500">{t.developerEmailLabel}</span>
+                  <p className="text-gray-700"><a href="mailto:sahgyan9@gmail.com" className="text-indigo-600 hover:text-indigo-800 hover:underline transition-colors">sahgyan9@gmail.com</a></p>
+                </div>
+                <div>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-indigo-500">{t.developerWebsiteLabel}</span>
+                  <p className="text-gray-700"><a href="https://friendly-learning-srmap.lovable.app/" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-800 hover:underline transition-colors">friendly-learning-srmap.lovable.app</a></p>
+                </div>
+                <div>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-indigo-500">{t.developerEducationLabel}</span>
+                  <p className="text-gray-700">Undergraduate in Physics</p>
+                </div>
+              </div>
+            </div>
+          </section>
       </div>
 
        <footer className="mt-8 text-center pb-8">

@@ -48,7 +48,12 @@ export const TRANSLATIONS: Record<Language, TranslationStrings> = {
     faq1Q: "What is a Village Compound Calculator?",
     faq1A: "In many parts of Nepal, local lenders use a specific method of compounding interest monthly or annually. This calculator simplifies that process by allowing you to input the principal and monthly rate directly in BS dates.",
     faq2Q: "How accurate is the Nepali Date conversion?",
-    faq2A: "We use the standard NepaliDateConverter library to ensure that Bikram Sambat dates are correctly handled, including leap years and varying month lengths in the BS calendar."
+    faq2A: "We use the standard NepaliDateConverter library to ensure that Bikram Sambat dates are correctly handled, including leap years and varying month lengths in the BS calendar.",
+    developerTitle: "Developer",
+    developerNameLabel: "Name",
+    developerEmailLabel: "Email",
+    developerWebsiteLabel: "Website",
+    developerEducationLabel: "Education"
   },
   ne: {
     title: "गाउँले ब्याज क्याल्कुलेटर (Village Calculator)",
@@ -88,7 +93,12 @@ export const TRANSLATIONS: Record<Language, TranslationStrings> = {
     faq1Q: "गाउँले ब्याज क्याल्कुलेटर के हो?",
     faq1A: "नेपालका धेरै भागहरूमा, स्थानीय ऋणदाताहरूले मासिक वा वार्षिक रूपमा ब्याज चक्रवृद्धि गर्ने विशिष्ट विधि प्रयोग गर्छन्। यो क्याल्कुलेटरले तपाईंलाई साँवा र मासिक दर सिधै BS मितिहरूमा इनपुट गर्न अनुमति दिएर त्यो प्रक्रियालाई सरल बनाउँछ।",
     faq2Q: "नेपाली मिति परिवर्तन कत्तिको सही छ?",
-    faq2A: "हामी विक्रम संवत मितिहरू सही रूपमा ह्यान्डल गरिएको सुनिश्चित गर्न मानक NepaliDateConverter पुस्तकालय प्रयोग गर्छौं।"
+    faq2A: "हामी विक्रम संवत मितिहरू सही रूपमा ह्यान्डल गरिएको सुनिश्चित गर्न मानक NepaliDateConverter पुस्तकालय प्रयोग गर्छौं।",
+    developerTitle: "विकासकर्ता",
+    developerNameLabel: "नाम",
+    developerEmailLabel: "इमेल",
+    developerWebsiteLabel: "वेबसाइट",
+    developerEducationLabel: "शिक्षा"
   }
 };
 
