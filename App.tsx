@@ -368,7 +368,7 @@ const App: React.FC = () => {
                 </div>
                 <div>
                   <span className="text-xs font-semibold uppercase tracking-wider text-indigo-500">{t.developerWebsiteLabel}</span>
-                  <p className="text-gray-700"><a href="https://gyankumarsah.lovable.app/" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-800 hover:underline transition-colors">Visit my Website</a></p>
+                  <p className="text-gray-700"><a href="https://gyankumarsah.com.np/" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-800 hover:underline transition-colors">Visit my Website</a></p>
                 </div>
                 <div>
                   <span className="text-xs font-semibold uppercase tracking-wider text-indigo-500">{t.developerEducationLabel}</span>
