@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+Disallow: /auth/
 
-Sitemap: https://nepali-calculator.com/sitemap.xml
+Sitemap: https://village-calculator.vercel.app/sitemap.xml
