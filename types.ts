@@ -99,4 +99,8 @@ export interface TranslationStrings {
   contactPhoneNepalLabel: string;
   contactPhoneIndiaLabel: string;
   closeLabel: string;
+  supportTitle: string;
+  supportText: string;
+  supportQrCaption: string;
+  supportThanks: string;
 }

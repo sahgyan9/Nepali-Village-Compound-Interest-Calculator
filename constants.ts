@@ -65,7 +65,11 @@ export const TRANSLATIONS: Record<Language, TranslationStrings> = {
     contactModalTitle: "Contact Me",
     contactPhoneNepalLabel: "Phone (Nepal)",
     contactPhoneIndiaLabel: "Phone (India)",
-    closeLabel: "Close"
+    closeLabel: "Close",
+    supportTitle: "Support the Developer",
+    supportText: "This calculator is free to use. If it helped you, consider supporting its development with a small tip. Scan the Citizens Bank QR below from any banking or payment app. Every bit is appreciated and keeps the project running.",
+    supportQrCaption: "Scan to pay via Citizens Bank",
+    supportThanks: "Thank you for your support!"
   },
   ne: {
     title: "गाउँले ब्याज क्याल्कुलेटर (Village Calculator)",
@@ -122,12 +126,16 @@ export const TRANSLATIONS: Record<Language, TranslationStrings> = {
     contactModalTitle: "मलाई सम्पर्क गर्नुहोस्",
     contactPhoneNepalLabel: "फोन (नेपाल)",
     contactPhoneIndiaLabel: "फोन (भारत)",
-    closeLabel: "बन्द गर्नुहोस्"
+    closeLabel: "बन्द गर्नुहोस्",
+    supportTitle: "विकासकर्तालाई सहयोग गर्नुहोस्",
+    supportText: "यो क्याल्कुलेटर निःशुल्क छ। यदि यसले तपाईंलाई मद्दत गर्‍यो भने, सानो सहयोग गरेर यसको विकासमा सहयोग गर्न सक्नुहुन्छ। तलको Citizens Bank QR कुनै पनि बैंकिङ वा भुक्तानी एपबाट स्क्यान गर्नुहोस्। तपाईंको सानो सहयोगले पनि यो परियोजनालाई निरन्तरता दिन मद्दत गर्छ।",
+    supportQrCaption: "Citizens Bank मार्फत भुक्तानी गर्न स्क्यान गर्नुहोस्",
+    supportThanks: "तपाईंको सहयोगको लागि धन्यवाद!"
   }
 };
 
 // Quick-add principal amounts shown as tappable chips below the principal input.
-export const QUICK_ADD_PRINCIPALS: number[] = [20000, 30000, 100000];
+export const QUICK_ADD_PRINCIPALS: number[] = [10000, 20000, 30000, 100000];
 
 // Quick-select monthly interest rates shown as tappable chips below the rate input.
 export const QUICK_SELECT_RATES: number[] = [2, 2.5, 3];
@@ -237,5 +245,5 @@ export const GlobeAltIcon: React.FC<{className?: string}> = ({ className = "w-5 
 );
 
 export const DEFAULT_NEPALI_YEAR = 2080;
-export const DEFAULT_NEPALI_MONTH = 1; // Baishakh
+export const DEFAULT_NEPALI_MONTH = 1; // Baishakh (1-indexed)
 export const DEFAULT_NEPALI_DAY = 1;
