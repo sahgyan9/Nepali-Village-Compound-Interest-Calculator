@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { NepaliDateValue, NepaliMonth, Language } from '../types';
-import { NEPALI_MONTHS, TRANSLATIONS } from '../constants';
+import { NEPALI_MONTHS, TRANSLATIONS, NEPALI_YEAR_START, NEPALI_YEAR_END } from '../constants';
 import { getDaysInNepaliMonth } from '../utils/nepaliDate';
 
 interface NepaliDateInputProps {
@@ -74,18 +74,21 @@ const NepaliDateInput: React.FC<NepaliDateInputProps> = ({ id, label, value, onC
     onChangeRef.current({ year: selectedYear, month: selectedMonth, day });
   };
 
-  const yearOptions = Array.from({ length: 101 }, (_, i) => 2000 + i);
+  const yearOptions = Array.from(
+    { length: NEPALI_YEAR_END - NEPALI_YEAR_START + 1 },
+    (_, i) => NEPALI_YEAR_START + i
+  );
 
   return (
     <div className="mb-4">
-      {label && <label htmlFor={`${id}-year`} className="block text-sm font-medium text-gray-700 mb-1">{label}</label>}
+      {label && <label htmlFor={`${id}-year`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{label}</label>}
       <div className="grid grid-cols-3 gap-2">
         <select
           id={`${id}-year`}
           value={selectedYear}
           onChange={handleYearChange}
           disabled={disabled}
-          className="block w-full py-2.5 px-3 border border-gray-300 bg-gray-50/50 text-gray-900 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="block w-full py-2.5 px-3 border border-gray-300 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800 text-gray-900 dark:text-gray-100 rounded-lg shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
           aria-label={`${label} Year`}
         >
           {yearOptions.map(year => <option key={year} value={year}>{year} {t.bs}</option>)}
@@ -95,7 +98,7 @@ const NepaliDateInput: React.FC<NepaliDateInputProps> = ({ id, label, value, onC
           value={selectedMonth}
           onChange={handleMonthChange}
           disabled={disabled}
-          className="block w-full py-2.5 px-3 border border-gray-300 bg-gray-50/50 text-gray-900 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="block w-full py-2.5 px-3 border border-gray-300 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800 text-gray-900 dark:text-gray-100 rounded-lg shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
           aria-label={`${label} Month`}
         >
           {NEPALI_MONTHS.map((month: NepaliMonth) => (
@@ -109,7 +112,7 @@ const NepaliDateInput: React.FC<NepaliDateInputProps> = ({ id, label, value, onC
           value={selectedDay}
           onChange={handleDayChange}
           disabled={disabled}
-          className="block w-full py-2.5 px-3 border border-gray-300 bg-gray-50/50 text-gray-900 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="block w-full py-2.5 px-3 border border-gray-300 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800 text-gray-900 dark:text-gray-100 rounded-lg shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
           aria-label={`${label} Day`}
         >
           {daysInMonth.map(day => <option key={day} value={day}>{day}</option>)}

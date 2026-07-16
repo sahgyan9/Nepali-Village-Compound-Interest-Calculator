@@ -48,7 +48,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             {
               onClick: () => window.location.reload(),
               className:
-                'px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors',
+                'px-6 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors',
             },
             'Refresh Page'
           )

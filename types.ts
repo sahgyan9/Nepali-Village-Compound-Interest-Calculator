@@ -47,6 +47,8 @@ export interface TranslationStrings {
   title: string;
   description: string;
   principalLabel: string;
+  quickAddLabel: string;
+  quickSelectLabel: string;
   npr: string;
   startDateLabel: string;
   endDateLabel: string;
@@ -74,7 +76,10 @@ export interface TranslationStrings {
   history: string;
   noHistory: string;
   delete: string;
+  deleteConfirm: string;
   clearHistory: string;
+  clearHistoryConfirm: string;
+  clearLabel: string;
   aboutTitle: string;
   aboutText: string;
   faqTitle: string;
@@ -86,5 +91,12 @@ export interface TranslationStrings {
   developerNameLabel: string;
   developerEmailLabel: string;
   developerWebsiteLabel: string;
-  developerEducationLabel: string;
+  contactTitle: string;
+  contactText: string;
+  contactBtn: string;
+  contactWebsiteBtn: string;
+  contactModalTitle: string;
+  contactPhoneNepalLabel: string;
+  contactPhoneIndiaLabel: string;
+  closeLabel: string;
 }
