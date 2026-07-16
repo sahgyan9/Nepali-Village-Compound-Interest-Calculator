@@ -12,13 +12,13 @@ interface InfoSectionsProps {
 // state and the main app state so the markup (and anchor ids) never diverge.
 const InfoSections: React.FC<InfoSectionsProps> = ({ t, onContactClick }) => (
   <div className="mt-12 w-full max-w-4xl px-4 pb-12">
-    <section className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-md rounded-2xl p-8 shadow-sm mb-8 dark:border dark:border-slate-800" id="about">
-      <h2 className="text-2xl font-bold text-emerald-900 dark:text-emerald-400 mb-4">{t.aboutTitle}</h2>
+    <section className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-sm mb-8 dark:border dark:border-slate-800" id="about">
+      <h2 className="text-xl sm:text-2xl font-bold text-emerald-900 dark:text-emerald-400 mb-4">{t.aboutTitle}</h2>
       <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{t.aboutText}</p>
     </section>
 
-    <section className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-md rounded-2xl p-8 shadow-sm dark:border dark:border-slate-800" id="faq">
-      <h2 className="text-2xl font-bold text-emerald-900 dark:text-emerald-400 mb-6">{t.faqTitle}</h2>
+    <section className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-sm dark:border dark:border-slate-800" id="faq">
+      <h2 className="text-xl sm:text-2xl font-bold text-emerald-900 dark:text-emerald-400 mb-6">{t.faqTitle}</h2>
       <div className="space-y-6">
         <div>
           <h3 className="text-lg font-semibold text-teal-800 dark:text-teal-400 mb-2">{t.faq1Q}</h3>
@@ -32,17 +32,17 @@ const InfoSections: React.FC<InfoSectionsProps> = ({ t, onContactClick }) => (
     </section>
 
     {/* Developer Section */}
-    <section className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-md rounded-2xl p-8 shadow-sm mt-8 dark:border dark:border-slate-800" id="developer">
-      <h2 className="text-2xl font-bold text-emerald-900 dark:text-emerald-400 mb-6">{t.developerTitle}</h2>
+    <section className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-sm mt-8 dark:border dark:border-slate-800" id="developer">
+      <h2 className="text-xl sm:text-2xl font-bold text-emerald-900 dark:text-emerald-400 mb-6">{t.developerTitle}</h2>
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 relative w-28 h-28 rounded-full border-4 border-emerald-200 dark:border-emerald-800 shadow-lg overflow-hidden">
           <img
-            src="/avatar.jpg"
+            src="/Developer_image.jpeg"
             alt="Gyan Kumar Sah"
             width={112}
             height={112}
             loading="lazy"
-            className="w-28 h-28 rounded-full object-cover border-4 border-emerald-200 dark:border-emerald-800 shadow-lg"
+            className="w-full h-full object-cover scale-[1.55] origin-center"
           />
         </div>
         <div className="flex-1 text-center sm:text-left space-y-4" itemScope itemType="https://schema.org/Person">
@@ -77,9 +77,29 @@ const InfoSections: React.FC<InfoSectionsProps> = ({ t, onContactClick }) => (
       </div>
     </section>
 
+    {/* Support the Developer Section */}
+    <section className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-sm mt-8 dark:border dark:border-slate-800" id="support">
+      <h2 className="text-xl sm:text-2xl font-bold text-emerald-900 dark:text-emerald-400 mb-4">{t.supportTitle}</h2>
+      <div className="flex flex-col sm:flex-row items-center gap-6">
+        <div className="flex-shrink-0 text-center w-full sm:w-auto">
+          <img
+            src="/citizen_bank_qr.jpeg"
+            alt={t.supportQrCaption}
+            loading="lazy"
+            className="w-full max-w-[260px] h-auto rounded-xl object-contain border border-emerald-200 dark:border-emerald-800 bg-white shadow-sm mx-auto"
+          />
+          <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">{t.supportQrCaption}</p>
+        </div>
+        <div className="flex-1 text-center sm:text-left">
+          <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{t.supportText}</p>
+          <p className="mt-4 font-semibold text-emerald-700 dark:text-emerald-400">{t.supportThanks}</p>
+        </div>
+      </div>
+    </section>
+
     {/* Contact Section */}
-    <section className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-8 shadow-sm mt-8 text-center" id="contact">
-      <h2 className="text-2xl font-bold text-white mb-3">{t.contactTitle}</h2>
+    <section className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-6 sm:p-8 shadow-sm mt-8 text-center" id="contact">
+      <h2 className="text-xl sm:text-2xl font-bold text-white mb-3">{t.contactTitle}</h2>
       <p className="text-emerald-100 max-w-xl mx-auto mb-6">{t.contactText}</p>
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
         <button
