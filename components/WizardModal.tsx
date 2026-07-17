@@ -17,6 +17,7 @@ interface WizardModalProps {
   result: CalculationResult | null;
   error: string | null;
   language: string;
+  setLanguage: (lang: any) => void;
   t: any;
   handlePrincipalChange: (val: string) => void;
   handleRateChange: (val: string) => void;
@@ -37,7 +38,7 @@ const pad2 = (n: number) => n.toString().padStart(2, '0');
 export const WizardModal: React.FC<WizardModalProps> = ({
   isOpen, onClose, currentStep, totalSteps, setCurrentStep,
   principal, monthlyInterestRate, startDate, endDate, result, error,
-  language, t, handlePrincipalChange, handleRateChange, handleStartDateChange, handleEndDateChange,
+  language, setLanguage, t, handlePrincipalChange, handleRateChange, handleStartDateChange, handleEndDateChange,
   addToPrincipal, selectRate, calculateInterest, formatNumber, formatInputValue, formatQuickAddLabel, formatDuration, formatDateWithMonthName
 }) => {
   if (!isOpen) return null;
@@ -58,11 +59,19 @@ export const WizardModal: React.FC<WizardModalProps> = ({
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
             {currentStep === 5 ? (language === 'en' ? 'Result' : 'नतिजा') : (language === 'en' ? `Step ${currentStep} of ${totalSteps - 1}` : `चरण ${currentStep} / ${totalSteps - 1}`)}
           </h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={() => setLanguage(language === 'en' ? 'ne' : 'en')}
+              className="text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-md hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors"
+            >
+              {language === 'en' ? 'नेपाली' : 'EN'}
+            </button>
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
         <div className="p-6">
           <form onSubmit={(e) => { 

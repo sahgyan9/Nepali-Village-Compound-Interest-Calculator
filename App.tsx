@@ -307,6 +307,7 @@ const App: React.FC = () => {
         result={calculator.result}
         error={calculator.error}
         language={language}
+        setLanguage={setLanguage}
         t={t}
         handlePrincipalChange={calculator.handlePrincipalChange}
         handleRateChange={calculator.handleRateChange}
