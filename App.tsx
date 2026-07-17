@@ -103,7 +103,7 @@ const App: React.FC = () => {
   
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 4;
+  const totalSteps = 5;
 
   const [exportItem, setExportItem] = useState<CalculationHistoryItem | null>(null);
   const exportRef = useRef<HTMLDivElement>(null);
@@ -346,13 +346,13 @@ const App: React.FC = () => {
     if (currentStep > 1) setCurrentStep(prev => prev - 1);
   };
 
-  const calculateInterest = useCallback(() => {
+  const calculateInterest = (): boolean => {
     setError(null);
     setResult(null);
 
     if (!isNepaliDateReady || !window.NepaliDate) {
       setError(t.errorLibrary);
-      return;
+      return false;
     }
 
     const initialPrincipal = parseFloat(principal);
@@ -360,16 +360,16 @@ const App: React.FC = () => {
 
     if (isNaN(initialPrincipal) || initialPrincipal <= 0) {
       setError(t.errorPrincipal);
-      return;
+      return false;
     }
     if (isNaN(ratePercent) || ratePercent < 0) {
       setError(t.errorRate);
-      return;
+      return false;
     }
 
     if (!startDate.year || !startDate.month || !startDate.day || !endDate.year || !endDate.month || !endDate.day) {
       setError(language === 'ne' ? 'कृपया पूर्ण सुरु र अन्तिम मिति छान्नुहोस्।' : 'Please select complete start and end dates.');
-      return;
+      return false;
     }
 
     try {
@@ -378,7 +378,7 @@ const App: React.FC = () => {
 
       if (!adStartDateInstance.getAD || !adEndDateInstance.getAD) {
           setError(t.errorConversion);
-          return;
+          return false;
       }
 
       const adStartDateParts = adStartDateInstance.getAD();
@@ -389,7 +389,7 @@ const App: React.FC = () => {
 
       if (jsAdEndDate.getTime() < jsAdStartDate.getTime()) {
         setError(t.errorEndDate);
-        return;
+        return false;
       }
 
       if (jsAdEndDate.getTime() === jsAdStartDate.getTime()) {
@@ -399,7 +399,7 @@ const App: React.FC = () => {
           totalInterest: 0,
           durationYMD,
         });
-        return;
+        return true;
       }
 
       const durationYMD = calculateNepaliYMDDifference(startDate, endDate);
@@ -445,10 +445,12 @@ const App: React.FC = () => {
         result: newResult,
       };
       setHistory(prev => [newHistoryItem, ...prev].slice(0, MAX_HISTORY));
+      return true;
 
     } catch (e) {
       console.error("Calculation error:", e);
       setError(t.errorGeneral);
+      return false;
     }
   }, [principal, monthlyInterestRate, startDate, endDate, isNepaliDateReady, t]);
 
@@ -918,7 +920,7 @@ const App: React.FC = () => {
         <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col relative transform transition-all duration-300 animate-fade-in mt-2 mb-auto md:my-auto">
           <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-              {language === 'en' ? `Step ${currentStep} of ${totalSteps}` : `चरण ${currentStep} / ${totalSteps}`}
+              {currentStep === 5 ? (language === 'en' ? 'Result' : 'नतिजा') : (language === 'en' ? `Step ${currentStep} of ${totalSteps - 1}` : `चरण ${currentStep} / ${totalSteps - 1}`)}
             </h3>
             <button onClick={closeWizard} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
@@ -927,8 +929,25 @@ const App: React.FC = () => {
             </button>
           </div>
           <div className="p-6">
-            <form onSubmit={(e) => { e.preventDefault(); if (currentStep === totalSteps) { calculateInterest(); closeWizard(); } else { handleNextStep(); } }} className="space-y-6">
+            <form onSubmit={(e) => { 
+              e.preventDefault(); 
+              if (currentStep === 4) { 
+                if (calculateInterest()) {
+                  setCurrentStep(5);
+                }
+              } else if (currentStep === 5) {
+                closeWizard();
+              } else { 
+                handleNextStep(); 
+              } 
+            }} className="space-y-6">
               
+              {error && (
+                <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded-lg text-sm mb-2 text-center animate-fade-in">
+                  {error}
+                </div>
+              )}
+
               {currentStep === 1 && (
                 <div className="animate-fade-slide-up">
                   <label htmlFor="principal-wizard" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4 text-center text-lg">{t.principalLabel}</label>
@@ -1055,22 +1074,52 @@ const App: React.FC = () => {
                 </div>
               )}
 
+              {currentStep === 5 && result && (
+                <div className="animate-fade-slide-up">
+                  <div className="space-y-3 bg-emerald-50 dark:bg-emerald-900/20 p-6 rounded-lg shadow-inner border border-emerald-100 dark:border-emerald-900/50">
+                    <div className="flex justify-between items-center text-lg result-row">
+                      <span className="text-gray-600 dark:text-gray-300">{t.interestPeriod}</span>
+                      <span className="font-semibold text-emerald-700 dark:text-emerald-400">{formatDuration(result.durationYMD)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-lg result-row">
+                      <span className="text-gray-600 dark:text-gray-300">{t.totalInterest}</span>
+                      <span className="font-semibold text-green-600 dark:text-green-400">रु {formatNumber(result.totalInterest)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xl pt-3 border-t border-emerald-200 dark:border-emerald-800/50 result-row">
+                      <span className="text-gray-700 dark:text-gray-200 font-medium">{t.totalAmount}</span>
+                      <span className="font-bold text-emerald-800 dark:text-emerald-300 text-2xl">रु {formatNumber(result.totalAmount)}</span>
+                    </div>
+                  </div>
+                  <p className="mt-4 text-[10px] text-gray-400 text-center italic">
+                    {t.note}
+                  </p>
+                </div>
+              )}
+
               <div className="flex justify-between mt-8 pt-4 border-t border-gray-100 dark:border-slate-800">
                 <button
                   type="button"
-                  onClick={currentStep > 1 ? handlePrevStep : closeWizard}
+                  onClick={currentStep === 5 ? () => {
+                    setPrincipal('');
+                    setCurrentStep(1);
+                  } : (currentStep > 1 ? handlePrevStep : closeWizard)}
                   className="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-800 rounded-xl hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
                 >
-                  {currentStep > 1 ? (language === 'en' ? 'Back' : 'पछाडि') : (language === 'en' ? 'Cancel' : 'रद्द गर्नुहोस्')}
+                  {currentStep === 5 ? (language === 'en' ? 'Start New' : 'नयाँ सुरु गर्नुहोस्') : (currentStep > 1 ? (language === 'en' ? 'Back' : 'पछाडि') : (language === 'en' ? 'Cancel' : 'रद्द गर्नुहोस्'))}
                 </button>
                 <button
                   type="submit"
                   className="px-6 py-2.5 text-sm font-bold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 transition-colors shadow-md flex items-center"
                 >
-                  {currentStep < totalSteps ? (language === 'en' ? 'Next' : 'अर्को') : t.calculateBtn}
-                  {currentStep < totalSteps && (
+                  {currentStep < 4 ? (language === 'en' ? 'Next' : 'अर्को') : currentStep === 4 ? t.calculateBtn : (language === 'en' ? 'Done' : 'सकियो')}
+                  {currentStep < 4 && (
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 ml-2">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                    </svg>
+                  )}
+                  {currentStep === 5 && (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 ml-2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                     </svg>
                   )}
                 </button>
