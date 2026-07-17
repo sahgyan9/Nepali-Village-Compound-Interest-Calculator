@@ -915,7 +915,7 @@ const App: React.FC = () => {
       )}
 
       {isWizardOpen && (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col relative transform transition-all duration-300 animate-fade-in my-auto">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col relative transform transition-all duration-300 animate-fade-in mt-2 mb-auto md:my-auto">
           <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
               {language === 'en' ? `Step ${currentStep} of ${totalSteps}` : `चरण ${currentStep} / ${totalSteps}`}
