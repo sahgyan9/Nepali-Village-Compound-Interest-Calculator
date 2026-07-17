@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ContactModal from './components/ContactModal';
 import InfoSections from './components/InfoSections';
 import WizardModal from './components/WizardModal';
+import ClassicForm from './components/ClassicForm';
 import ResultDisplay from './components/ResultDisplay';
 import HistoryList from './components/HistoryList';
 import { useCalculator, STATE_STORAGE_KEY } from './hooks/useCalculator';
@@ -21,6 +22,22 @@ const App: React.FC = () => {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 5;
+
+  const [isClassicMode, setIsClassicMode] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('classicMode') === 'true';
+    }
+    return false;
+  });
+
+  const toggleClassicMode = () => {
+    setIsClassicMode(prev => {
+      const next = !prev;
+      localStorage.setItem('classicMode', String(next));
+      if (next && isWizardOpen) setIsWizardOpen(false);
+      return next;
+    });
+  };
 
   const [showContactModal, setShowContactModal] = useState<boolean>(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
@@ -176,23 +193,67 @@ const App: React.FC = () => {
           </header>
 
           <div className="flex flex-col items-center justify-center space-y-6">
-            <button
-              onClick={startWizard}
-              className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-200 bg-blue-600 rounded-2xl hover:bg-blue-500 hover:shadow-lg hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 w-full md:w-auto text-lg overflow-hidden"
-            >
-              <div className="absolute inset-0 w-full h-full -mt-1 rounded-2xl opacity-30 bg-gradient-to-b from-transparent via-transparent to-black"></div>
-              <span className="relative flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6 mr-3">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-                {language === 'en' ? 'New Calculation' : 'नयाँ गणना'}
-              </span>
-            </button>
-            <p className="text-sm text-gray-500 dark:text-gray-400 text-center max-w-sm">
-              {language === 'en' 
-                ? 'Click above to start a new compound interest calculation in a simple step-by-step wizard.' 
-                : 'नयाँ ब्याज गणना सुरु गर्न माथि क्लिक गर्नुहोस्।'}
-            </p>
+            {!isClassicMode ? (
+              <>
+                <button
+                  onClick={startWizard}
+                  className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-200 bg-blue-600 rounded-2xl hover:bg-blue-500 hover:shadow-lg hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 w-full md:w-auto text-lg overflow-hidden"
+                >
+                  <div className="absolute inset-0 w-full h-full -mt-1 rounded-2xl opacity-30 bg-gradient-to-b from-transparent via-transparent to-black"></div>
+                  <span className="relative flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6 mr-3">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    {language === 'en' ? 'New Calculation' : 'नयाँ गणना'}
+                  </span>
+                </button>
+                <div className="flex flex-col items-center space-y-2">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 text-center max-w-sm">
+                    {language === 'en' 
+                      ? 'Click above to start a new compound interest calculation in a simple step-by-step wizard.' 
+                      : 'नयाँ ब्याज गणना सुरु गर्न माथि क्लिक गर्नुहोस्।'}
+                  </p>
+                  <button 
+                    onClick={toggleClassicMode}
+                    className="text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 underline underline-offset-2 transition-colors mt-2"
+                  >
+                    {language === 'en' ? 'Switch to Classic View' : 'पुरानो शैलीमा हेर्नुहोस्'}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="w-full relative">
+                <div className="flex justify-end mb-4">
+                  <button 
+                    onClick={toggleClassicMode}
+                    className="text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 flex items-center transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 mr-1">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+                    </svg>
+                    {language === 'en' ? 'Back to Step-by-Step Wizard' : 'विजार्डमा फर्कनुहोस्'}
+                  </button>
+                </div>
+                <ClassicForm
+                  principal={calculator.principal}
+                  monthlyInterestRate={calculator.monthlyInterestRate}
+                  startDate={calculator.startDate}
+                  endDate={calculator.endDate}
+                  error={calculator.error}
+                  language={language}
+                  t={t}
+                  handlePrincipalChange={calculator.handlePrincipalChange}
+                  handleRateChange={calculator.handleRateChange}
+                  handleStartDateChange={calculator.handleStartDateChange}
+                  handleEndDateChange={calculator.handleEndDateChange}
+                  addToPrincipal={calculator.addToPrincipal}
+                  selectRate={calculator.selectRate}
+                  calculateInterest={calculator.calculateInterest}
+                  formatInputValue={formatInputValue}
+                  formatQuickAddLabel={formatQuickAddLabel}
+                />
+              </div>
+            )}
           </div>
 
           {calculator.result && !calculator.error && (
