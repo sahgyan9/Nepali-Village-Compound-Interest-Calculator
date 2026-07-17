@@ -346,7 +346,7 @@ const App: React.FC = () => {
     if (currentStep > 1) setCurrentStep(prev => prev - 1);
   };
 
-  const calculateInterest = (): boolean => {
+  const calculateInterest = useCallback((): boolean => {
     setError(null);
     setResult(null);
 
@@ -965,7 +965,6 @@ const App: React.FC = () => {
                       className="focus:ring-emerald-500 focus:border-emerald-500 block w-full pl-10 pr-12 py-3 text-lg border border-gray-300 dark:border-slate-700 rounded-lg bg-gray-50/50 dark:bg-slate-800 dark:text-white"
                       placeholder="0"
                       aria-describedby="principal-currency-wizard"
-                      autoFocus
                     />
                     <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                       <span className="text-gray-500 dark:text-gray-400 sm:text-sm" id="principal-currency-wizard">{t.npr}</span>
@@ -1052,7 +1051,6 @@ const App: React.FC = () => {
                       min="0"
                       step="any"
                       aria-describedby="interest-rate-unit-wizard"
-                      autoFocus
                     />
                     <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                       <span className="text-gray-500 dark:text-gray-400 sm:text-sm" id="interest-rate-unit-wizard">%</span>
