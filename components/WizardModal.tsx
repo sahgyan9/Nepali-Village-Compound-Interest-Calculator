@@ -209,48 +209,59 @@ export const WizardModal: React.FC<WizardModalProps> = ({
             )}
 
             {currentStep === 5 && result && (
-              <div className="animate-fade-slide-up">
-                <div className="mb-4 p-4 bg-gray-50 dark:bg-slate-900/50 rounded-lg border border-gray-100 dark:border-slate-700">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <span className="text-gray-500 dark:text-gray-400 block">{t.principalLabel}</span>
-                      <span className="font-semibold text-gray-800 dark:text-gray-100">रु {formatNumber(parseFloat(principal))}</span>
-                    </div>
-                    <div>
-                      <span className="text-gray-500 dark:text-gray-400 block">{t.interestRateLabel}</span>
-                      <span className="font-semibold text-gray-800 dark:text-gray-100">{monthlyInterestRate}%</span>
-                    </div>
-                    <div>
-                      <span className="text-gray-500 dark:text-gray-400 block">{t.startDateLabel}</span>
-                      <span className="font-semibold text-gray-800 dark:text-gray-100">
-                        {formatDateWithMonthName(startDate)} {t.bs}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-gray-500 dark:text-gray-400 block">{t.endDateLabel}</span>
-                      <span className="font-semibold text-gray-800 dark:text-gray-100">
-                        {formatDateWithMonthName(endDate)} {t.bs}
-                      </span>
+              <div className="animate-fade-slide-up space-y-6">
+                <div>
+                  <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                    {language === 'en' ? 'Your Inputs' : 'तपाईंको विवरण'}
+                  </h4>
+                  <div className="p-4 bg-gray-50 dark:bg-slate-900/50 rounded-xl border border-gray-100 dark:border-slate-700">
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="text-gray-500 dark:text-gray-400 block mb-0.5">{t.principalLabel}</span>
+                        <span className="font-semibold text-gray-800 dark:text-gray-100">रु {formatNumber(parseFloat(principal))}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-500 dark:text-gray-400 block mb-0.5">{t.interestRateLabel}</span>
+                        <span className="font-semibold text-gray-800 dark:text-gray-100">{monthlyInterestRate}%</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-500 dark:text-gray-400 block mb-0.5">{t.startDateLabel}</span>
+                        <span className="font-semibold text-gray-800 dark:text-gray-100">
+                          {formatDateWithMonthName(startDate)} {t.bs}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-gray-500 dark:text-gray-400 block mb-0.5">{t.endDateLabel}</span>
+                        <span className="font-semibold text-gray-800 dark:text-gray-100">
+                          {formatDateWithMonthName(endDate)} {t.bs}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="space-y-3 bg-emerald-50 dark:bg-emerald-900/20 p-6 rounded-lg shadow-inner border border-emerald-100 dark:border-emerald-900/50">
-                  <div className="flex justify-between items-center text-lg result-row">
-                    <span className="text-gray-600 dark:text-gray-300">{t.interestPeriod}</span>
-                    <span className="font-semibold text-emerald-700 dark:text-emerald-400">{formatDuration(result.durationYMD)}</span>
+
+                <div>
+                  <h4 className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-2">
+                    {language === 'en' ? 'Calculation Result' : 'गणना नतिजा'}
+                  </h4>
+                  <div className="space-y-3 bg-emerald-50 dark:bg-emerald-900/30 p-5 rounded-xl shadow-sm border border-emerald-100 dark:border-emerald-800/50">
+                    <div className="flex justify-between items-center text-sm md:text-base result-row">
+                      <span className="text-gray-600 dark:text-gray-300">{t.interestPeriod}</span>
+                      <span className="font-semibold text-emerald-700 dark:text-emerald-400">{formatDuration(result.durationYMD)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm md:text-base result-row">
+                      <span className="text-gray-600 dark:text-gray-300">{t.totalInterest}</span>
+                      <span className="font-semibold text-green-600 dark:text-green-400">रु {formatNumber(result.totalInterest)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-lg md:text-xl pt-3 border-t border-emerald-200 dark:border-emerald-800/50 result-row">
+                      <span className="text-gray-700 dark:text-gray-200 font-medium">{t.totalAmount}</span>
+                      <span className="font-bold text-emerald-800 dark:text-emerald-300 text-xl md:text-2xl">रु {formatNumber(result.totalAmount)}</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center text-lg result-row">
-                    <span className="text-gray-600 dark:text-gray-300">{t.totalInterest}</span>
-                    <span className="font-semibold text-green-600 dark:text-green-400">रु {formatNumber(result.totalInterest)}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xl pt-3 border-t border-emerald-200 dark:border-emerald-800/50 result-row">
-                    <span className="text-gray-700 dark:text-gray-200 font-medium">{t.totalAmount}</span>
-                    <span className="font-bold text-emerald-800 dark:text-emerald-300 text-2xl">रु {formatNumber(result.totalAmount)}</span>
-                  </div>
+                  <p className="mt-3 text-[10px] text-gray-400 text-center italic">
+                    {t.note}
+                  </p>
                 </div>
-                <p className="mt-4 text-[10px] text-gray-400 text-center italic">
-                  {t.note}
-                </p>
               </div>
             )}
 

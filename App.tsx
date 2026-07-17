@@ -178,7 +178,7 @@ const App: React.FC = () => {
           <div className="flex flex-col items-center justify-center space-y-6">
             <button
               onClick={startWizard}
-              className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-200 bg-emerald-600 rounded-2xl hover:bg-emerald-500 hover:shadow-lg hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-600 w-full md:w-auto text-lg overflow-hidden"
+              className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-200 bg-blue-600 rounded-2xl hover:bg-blue-500 hover:shadow-lg hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 w-full md:w-auto text-lg overflow-hidden"
             >
               <div className="absolute inset-0 w-full h-full -mt-1 rounded-2xl opacity-30 bg-gradient-to-b from-transparent via-transparent to-black"></div>
               <span className="relative flex items-center">
