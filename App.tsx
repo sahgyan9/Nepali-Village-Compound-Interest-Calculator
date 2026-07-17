@@ -215,11 +215,32 @@ const App: React.FC = () => {
   }, [language, principal, monthlyInterestRate, startDate, endDate]);
 
   const formatNumber = (num: number | string) => {
-    return num.toLocaleString('en-IN');
+    const n = Number(num);
+    return isNaN(n) ? num.toString() : n.toLocaleString('en-IN');
+  };
+
+  const formatInputValue = (val: string) => {
+    if (!val) return '';
+    const parts = val.split('.');
+    const num = Number(parts[0]);
+    if (isNaN(num)) return val;
+    let formatted = num.toLocaleString('en-IN');
+    if (parts.length > 1) {
+      formatted += '.' + parts.slice(1).join('');
+    } else if (val.endsWith('.')) {
+      formatted += '.';
+    }
+    return formatted;
   };
 
   const handlePrincipalChange = (value: string) => {
-    setPrincipal(value);
+    const numericValue = value.replace(/[^0-9.]/g, '');
+    const parts = numericValue.split('.');
+    let cleanValue = parts[0];
+    if (parts.length > 1) {
+      cleanValue += '.' + parts.slice(1).join('');
+    }
+    setPrincipal(cleanValue);
     clearResult();
   };
 
@@ -491,15 +512,14 @@ const App: React.FC = () => {
                 <CurrencyNPRIcon className="h-5 w-5 text-gray-400" />
               </div>
               <input
-                type="number"
+                type="text"
+                inputMode="decimal"
                 name="principal"
                 id="principal"
-                value={principal}
+                value={formatInputValue(principal)}
                 onChange={(e) => handlePrincipalChange(e.target.value)}
                 className="focus:ring-emerald-500 focus:border-emerald-500 block w-full pl-10 pr-12 py-2.5 sm:text-sm border border-gray-300 dark:border-slate-700 rounded-lg bg-gray-50/50 dark:bg-slate-800 dark:text-white"
-                placeholder="e.g., 100000"
-                min="0"
-                step="any"
+                placeholder="0"
                 aria-describedby="principal-currency"
               />
                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
