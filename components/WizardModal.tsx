@@ -287,7 +287,7 @@ export const WizardModal: React.FC<WizardModalProps> = ({
               </button>
               <button
                 type="submit"
-                className="px-6 py-2.5 text-sm font-bold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 transition-colors shadow-md flex items-center"
+                className="px-6 py-2.5 text-sm font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-colors shadow-md flex items-center"
               >
                 {currentStep < 4 ? (language === 'en' ? 'Next' : 'अर्को') : currentStep === 4 ? t.calculateBtn : (language === 'en' ? 'Done' : 'सकियो')}
                 {currentStep < 4 && (
