@@ -100,6 +100,11 @@ const App: React.FC = () => {
   const [history, setHistory] = useState<CalculationHistoryItem[]>(() =>
     safeLocalStorageGet<CalculationHistoryItem[]>(HISTORY_STORAGE_KEY, [])
   );
+  
+  const [isWizardOpen, setIsWizardOpen] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 4;
+
   const [exportItem, setExportItem] = useState<CalculationHistoryItem | null>(null);
   const exportRef = useRef<HTMLDivElement>(null);
   const [showContactModal, setShowContactModal] = useState<boolean>(false);
@@ -319,6 +324,28 @@ const App: React.FC = () => {
     checkLibrary();
   }, []);
 
+  const startWizard = () => {
+    setPrincipal('');
+    setStartDate({ year: '', month: '', day: '' });
+    setEndDate(getTodayBS());
+    setMonthlyInterestRate('3');
+    setCurrentStep(1);
+    clearResult();
+    setIsWizardOpen(true);
+  };
+
+  const closeWizard = () => {
+    setIsWizardOpen(false);
+  };
+
+  const handleNextStep = () => {
+    if (currentStep < totalSteps) setCurrentStep(prev => prev + 1);
+  };
+
+  const handlePrevStep = () => {
+    if (currentStep > 1) setCurrentStep(prev => prev - 1);
+  };
+
   const calculateInterest = useCallback(() => {
     setError(null);
     setResult(null);
@@ -509,126 +536,187 @@ const App: React.FC = () => {
           <p className="text-gray-600 dark:text-gray-400 mt-2">{t.description}</p>
         </header>
 
-        <form onSubmit={(e) => { e.preventDefault(); calculateInterest(); }} className="space-y-6">
-          <div>
-            <label htmlFor="principal" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.principalLabel}</label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <CurrencyNPRIcon className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                inputMode="decimal"
-                name="principal"
-                id="principal"
-                value={formatInputValue(principal)}
-                onChange={(e) => handlePrincipalChange(e.target.value)}
-                className="focus:ring-emerald-500 focus:border-emerald-500 block w-full pl-10 pr-12 py-2.5 sm:text-sm border border-gray-300 dark:border-slate-700 rounded-lg bg-gray-50/50 dark:bg-slate-800 dark:text-white"
-                placeholder="0"
-                aria-describedby="principal-currency"
-              />
-               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <span className="text-gray-500 dark:text-gray-400 sm:text-sm" id="principal-currency">{t.npr}</span>
-              </div>
-            </div>
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span className="text-xs text-gray-500 dark:text-gray-400">{t.quickAddLabel}</span>
-              {QUICK_ADD_PRINCIPALS.map((amount) => (
-                <button
-                  key={amount}
-                  type="button"
-                  onClick={() => addToPrincipal(amount)}
-                  className="px-3 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 rounded-full hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors border border-emerald-200 dark:border-emerald-800"
-                >
-                  +{formatQuickAddLabel(amount)}
+        {!isWizardOpen ? (
+          <div className="flex justify-center my-8">
+            <button
+              onClick={startWizard}
+              className="btn-glow w-full md:w-auto flex items-center justify-center py-4 px-8 border border-transparent rounded-xl shadow-lg text-lg font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 mr-2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              {language === 'en' ? 'New Calculation' : 'नयाँ गणना'}
+            </button>
+          </div>
+        ) : null}
+
+        {isWizardOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col relative transform transition-all duration-300">
+              <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                  {language === 'en' ? `Step ${currentStep} of ${totalSteps}` : `चरण ${currentStep} / ${totalSteps}`}
+                </h3>
+                <button onClick={closeWizard} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                 </button>
-              ))}
-              {principal !== '' && (
-                <button
-                  type="button"
-                  onClick={() => handlePrincipalChange('')}
-                  className="px-3 py-1 text-xs font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 rounded-full hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors border border-red-200 dark:border-red-800"
-                >
-                  {t.clearLabel}
-                </button>
-              )}
+              </div>
+              <div className="p-6">
+                <form onSubmit={(e) => { e.preventDefault(); if (currentStep === totalSteps) { calculateInterest(); closeWizard(); } else { handleNextStep(); } }} className="space-y-6">
+                  
+                  {currentStep === 1 && (
+                    <div className="animate-fade-slide-up">
+                      <label htmlFor="principal" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4 text-center text-lg">{t.principalLabel}</label>
+                      <div className="mt-1 relative rounded-md shadow-sm">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <CurrencyNPRIcon className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <input
+                          type="text"
+                          inputMode="decimal"
+                          name="principal"
+                          id="principal"
+                          value={formatInputValue(principal)}
+                          onChange={(e) => handlePrincipalChange(e.target.value)}
+                          className="focus:ring-emerald-500 focus:border-emerald-500 block w-full pl-10 pr-12 py-3 text-lg border border-gray-300 dark:border-slate-700 rounded-lg bg-gray-50/50 dark:bg-slate-800 dark:text-white"
+                          placeholder="0"
+                          aria-describedby="principal-currency"
+                          autoFocus
+                        />
+                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                          <span className="text-gray-500 dark:text-gray-400 sm:text-sm" id="principal-currency">{t.npr}</span>
+                        </div>
+                      </div>
+                      <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+                        <span className="text-xs text-gray-500 dark:text-gray-400 w-full text-center mb-1">{t.quickAddLabel}</span>
+                        {QUICK_ADD_PRINCIPALS.map((amount) => (
+                          <button
+                            key={amount}
+                            type="button"
+                            onClick={() => addToPrincipal(amount)}
+                            className="px-4 py-1.5 text-sm font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 rounded-full hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors border border-emerald-200 dark:border-emerald-800"
+                          >
+                            +{formatQuickAddLabel(amount)}
+                          </button>
+                        ))}
+                        {principal !== '' && (
+                          <button
+                            type="button"
+                            onClick={() => handlePrincipalChange('')}
+                            className="px-4 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 rounded-full hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors border border-red-200 dark:border-red-800"
+                          >
+                            {t.clearLabel}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {currentStep === 2 && (
+                    <div className="animate-fade-slide-up">
+                      <div className="mb-4 text-center">
+                        <span className="text-lg font-medium text-gray-700 dark:text-gray-300">{t.startDateLabel}</span>
+                      </div>
+                      <NepaliDateInput
+                        id="start-date"
+                        label=""
+                        value={startDate}
+                        onChange={handleStartDateChange}
+                        language={language}
+                      />
+                    </div>
+                  )}
+
+                  {currentStep === 3 && (
+                    <div className="animate-fade-slide-up relative">
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="text-lg font-medium text-gray-700 dark:text-gray-300">{t.endDateLabel}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleEndDateChange(getTodayBS())}
+                          className="text-sm font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 dark:hover:text-emerald-300 flex items-center bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1 rounded-full"
+                        >
+                          <CalendarIcon className="w-4 h-4 mr-1" />
+                          {t.today}
+                        </button>
+                      </div>
+                      <NepaliDateInput
+                        id="end-date"
+                        label=""
+                        value={endDate}
+                        onChange={handleEndDateChange}
+                        language={language}
+                      />
+                    </div>
+                  )}
+
+                  {currentStep === 4 && (
+                    <div className="animate-fade-slide-up">
+                      <label htmlFor="interest-rate" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4 text-center text-lg">{t.interestRateLabel}</label>
+                      <div className="mt-1 relative rounded-md shadow-sm">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <PercentIcon className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <input
+                          type="number"
+                          name="interest-rate"
+                          id="interest-rate"
+                          value={monthlyInterestRate}
+                          onChange={(e) => handleRateChange(e.target.value)}
+                          className="focus:ring-emerald-500 focus:border-emerald-500 block w-full pl-10 pr-12 py-3 text-lg border border-gray-300 dark:border-slate-700 rounded-lg bg-gray-50/50 dark:bg-slate-800 dark:text-white"
+                          placeholder="e.g., 1.5"
+                          min="0"
+                          step="any"
+                          aria-describedby="interest-rate-unit"
+                          autoFocus
+                        />
+                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                          <span className="text-gray-500 dark:text-gray-400 sm:text-sm" id="interest-rate-unit">%</span>
+                        </div>
+                      </div>
+                      <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+                        <span className="text-xs text-gray-500 dark:text-gray-400 w-full text-center mb-1">{t.quickSelectLabel}</span>
+                        {QUICK_SELECT_RATES.map((rate) => (
+                          <button
+                            key={rate}
+                            type="button"
+                            onClick={() => selectRate(rate)}
+                            className="px-4 py-1.5 text-sm font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 rounded-full hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors border border-emerald-200 dark:border-emerald-800"
+                          >
+                            {rate}%
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between mt-8 pt-4 border-t border-gray-100 dark:border-slate-800">
+                    <button
+                      type="button"
+                      onClick={currentStep > 1 ? handlePrevStep : closeWizard}
+                      className="px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-800 rounded-xl hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
+                    >
+                      {currentStep > 1 ? (language === 'en' ? 'Back' : 'पछाडि') : (language === 'en' ? 'Cancel' : 'रद्द गर्नुहोस्')}
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-6 py-2.5 text-sm font-bold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 transition-colors shadow-md flex items-center"
+                    >
+                      {currentStep < totalSteps ? (language === 'en' ? 'Next' : 'अर्को') : t.calculateBtn}
+                      {currentStep < totalSteps && (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 ml-2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
-
-          <NepaliDateInput
-            id="start-date"
-            label={t.startDateLabel}
-            value={startDate}
-            onChange={handleStartDateChange}
-            language={language}
-          />
-          <div className="relative">
-            <div className="flex justify-between items-center mb-1">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t.endDateLabel}</label>
-              <button
-                type="button"
-                onClick={() => handleEndDateChange(getTodayBS())}
-                className="text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 dark:hover:text-emerald-300 flex items-center"
-              >
-                <CalendarIcon className="w-3 h-3 mr-1" />
-                {t.today}
-              </button>
-            </div>
-            <NepaliDateInput
-              id="end-date"
-              label=""
-              value={endDate}
-              onChange={handleEndDateChange}
-              language={language}
-            />
-          </div>
-
-          <div>
-            <label htmlFor="interest-rate" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t.interestRateLabel}</label>
-             <div className="mt-1 relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <PercentIcon className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                type="number"
-                name="interest-rate"
-                id="interest-rate"
-                value={monthlyInterestRate}
-                onChange={(e) => handleRateChange(e.target.value)}
-                className="focus:ring-emerald-500 focus:border-emerald-500 block w-full pl-10 pr-12 py-2.5 sm:text-sm border border-gray-300 dark:border-slate-700 rounded-lg bg-gray-50/50 dark:bg-slate-800 dark:text-white"
-                placeholder="e.g., 1.5"
-                min="0"
-                step="any"
-                aria-describedby="interest-rate-unit"
-              />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <span className="text-gray-500 dark:text-gray-400 sm:text-sm" id="interest-rate-unit">%</span>
-              </div>
-            </div>
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span className="text-xs text-gray-500 dark:text-gray-400">{t.quickSelectLabel}</span>
-              {QUICK_SELECT_RATES.map((rate) => (
-                <button
-                  key={rate}
-                  type="button"
-                  onClick={() => selectRate(rate)}
-                  className="px-3 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 rounded-full hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors border border-emerald-200 dark:border-emerald-800"
-                >
-                  {rate}%
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            className="btn-glow w-full flex items-center justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-lg text-base font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all transform hover:scale-[1.02] active:scale-[0.98]"
-            aria-live="polite"
-          >
-            <CalendarIcon className="w-5 h-5 mr-2" />
-            {t.calculateBtn}
-          </button>
-        </form>
+        )}
 
         {error && (
           <div role="alert" className="mt-6 p-4 bg-red-50 dark:bg-red-900/30 border-l-4 border-red-400 dark:border-red-800 rounded-md">

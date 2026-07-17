@@ -140,7 +140,7 @@ export const QUICK_ADD_PRINCIPALS: number[] = [10000, 20000, 30000, 100000];
 // Quick-select monthly interest rates shown as tappable chips below the rate input.
 export const QUICK_SELECT_RATES: number[] = [2, 2.5, 3];
 
-export const NEPALI_YEAR_START = 2000; // Bikram Sambat year
+export const NEPALI_YEAR_START = 2075; // Bikram Sambat year
 export const NEPALI_YEAR_END = 2100;   // Bikram Sambat year
 
 // Fixed: Rewrote component using React.createElement to resolve JSX parsing errors.
