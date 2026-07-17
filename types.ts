@@ -10,9 +10,9 @@ declare global {
 export type Language = 'en' | 'ne';
 
 export interface NepaliDateValue {
-  year: number;
-  month: number; // 1-12 (Baishakh to Chaitra)
-  day: number;   // 1-32
+  year: number | '';
+  month: number | ''; // 1-12 (Baishakh to Chaitra)
+  day: number | '';   // 1-32
 }
 
 export interface DurationYMD {

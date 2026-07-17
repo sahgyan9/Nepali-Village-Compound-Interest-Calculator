@@ -27,13 +27,13 @@ const calculateNepaliYMDDifference = (
   startDateVal: NepaliDateValue,
   endDateVal: NepaliDateValue
 ): DurationYMD => {
-  let y1 = startDateVal.year;
-  let m1 = startDateVal.month;
-  let d1 = startDateVal.day;
+  let y1 = Number(startDateVal.year);
+  let m1 = Number(startDateVal.month);
+  let d1 = Number(startDateVal.day);
 
-  let y2 = endDateVal.year;
-  let m2 = endDateVal.month;
-  let d2 = endDateVal.day;
+  let y2 = Number(endDateVal.year);
+  let m2 = Number(endDateVal.month);
+  let d2 = Number(endDateVal.day);
 
   if (d2 < d1) {
     // Borrow days: Assume a 30-day month for borrowing purposes.
@@ -85,14 +85,14 @@ const App: React.FC = () => {
   const [monthlyInterestRate, setMonthlyInterestRate] = useState<string>(savedState.monthlyInterestRate || '3');
 
   const [startDate, setStartDate] = useState<NepaliDateValue>(
-    () => savedState.startDate || { year: DEFAULT_NEPALI_YEAR, month: DEFAULT_NEPALI_MONTH, day: DEFAULT_NEPALI_DAY }
+    () => ({ year: '', month: '', day: '' })
   );
   const [endDate, setEndDate] = useState<NepaliDateValue>(
-    () => savedState.endDate || { year: DEFAULT_NEPALI_YEAR, month: DEFAULT_NEPALI_MONTH, day: DEFAULT_NEPALI_DAY }
+    () => ({ year: '', month: '', day: '' })
   );
-  // First-time visitors (no saved end date) get today's BS date as the end
-  // date once the date library is ready, instead of a permanently stale default.
-  const shouldDefaultEndDateToToday = useRef(!savedState.endDate);
+  
+  // Set end date to today on initial load when the date library is ready
+  const shouldDefaultEndDateToToday = useRef(true);
 
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -340,9 +340,14 @@ const App: React.FC = () => {
       return;
     }
 
+    if (!startDate.year || !startDate.month || !startDate.day || !endDate.year || !endDate.month || !endDate.day) {
+      setError(language === 'ne' ? 'कृपया पूर्ण सुरु र अन्तिम मिति छान्नुहोस्।' : 'Please select complete start and end dates.');
+      return;
+    }
+
     try {
-      const adStartDateInstance = new window.NepaliDate(startDate.year, startDate.month - 1, startDate.day);
-      const adEndDateInstance = new window.NepaliDate(endDate.year, endDate.month - 1, endDate.day);
+      const adStartDateInstance = new window.NepaliDate(Number(startDate.year), Number(startDate.month) - 1, Number(startDate.day));
+      const adEndDateInstance = new window.NepaliDate(Number(endDate.year), Number(endDate.month) - 1, Number(endDate.day));
 
       if (!adStartDateInstance.getAD || !adEndDateInstance.getAD) {
           setError(t.errorConversion);

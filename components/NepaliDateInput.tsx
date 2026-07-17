@@ -20,12 +20,12 @@ const NepaliDateInput: React.FC<NepaliDateInputProps> = ({ id, label, value, onC
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
 
-  const [selectedYear, setSelectedYear] = useState<number>(value.year);
-  const [selectedMonth, setSelectedMonth] = useState<number>(value.month); // 1-indexed
-  const [selectedDay, setSelectedDay] = useState<number>(value.day);
+  const [selectedYear, setSelectedYear] = useState<number | ''>(value.year);
+  const [selectedMonth, setSelectedMonth] = useState<number | ''>(value.month); // 1-indexed
+  const [selectedDay, setSelectedDay] = useState<number | ''>(value.day);
 
   const [daysInMonth, setDaysInMonth] = useState<number[]>(() => {
-    const numDays = getDaysInNepaliMonth(value.year, value.month);
+    const numDays = (value.year && value.month) ? getDaysInNepaliMonth(Number(value.year), Number(value.month)) : 32;
     return Array.from({ length: numDays }, (_, i) => i + 1);
   });
 
@@ -34,10 +34,10 @@ const NepaliDateInput: React.FC<NepaliDateInputProps> = ({ id, label, value, onC
     setSelectedYear(value.year);
     setSelectedMonth(value.month);
     
-    const numDaysForValue = getDaysInNepaliMonth(value.year, value.month);
+    const numDaysForValue = (value.year && value.month) ? getDaysInNepaliMonth(Number(value.year), Number(value.month)) : 32;
     setDaysInMonth(Array.from({ length: numDaysForValue }, (_, i) => i + 1));
 
-    if (value.day > numDaysForValue) {
+    if (value.day !== '' && Number(value.day) > numDaysForValue) {
       setSelectedDay(numDaysForValue);
       onChangeRef.current({ year: value.year, month: value.month, day: numDaysForValue });
     } else {
@@ -48,11 +48,11 @@ const NepaliDateInput: React.FC<NepaliDateInputProps> = ({ id, label, value, onC
   // Handle local changes to year/month
   useEffect(() => {
     if (selectedYear !== value.year || selectedMonth !== value.month) {
-      const numDays = getDaysInNepaliMonth(selectedYear, selectedMonth);
+      const numDays = (selectedYear && selectedMonth) ? getDaysInNepaliMonth(Number(selectedYear), Number(selectedMonth)) : 32;
       setDaysInMonth(Array.from({ length: numDays }, (_, i) => i + 1));
 
       let dayToSet = selectedDay;
-      if (selectedDay > numDays) {
+      if (selectedDay !== '' && Number(selectedDay) > numDays) {
         dayToSet = numDays;
         setSelectedDay(numDays);
       }
@@ -61,15 +61,15 @@ const NepaliDateInput: React.FC<NepaliDateInputProps> = ({ id, label, value, onC
   }, [selectedYear, selectedMonth]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedYear(parseInt(e.target.value));
+    setSelectedYear(e.target.value ? parseInt(e.target.value) : '');
   };
 
   const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedMonth(parseInt(e.target.value));
+    setSelectedMonth(e.target.value ? parseInt(e.target.value) : '');
   };
 
   const handleDayChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const day = parseInt(e.target.value);
+    const day = e.target.value ? parseInt(e.target.value) : '';
     setSelectedDay(day);
     onChangeRef.current({ year: selectedYear, month: selectedMonth, day });
   };
@@ -91,6 +91,7 @@ const NepaliDateInput: React.FC<NepaliDateInputProps> = ({ id, label, value, onC
           className="block w-full py-2.5 px-3 border border-gray-300 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800 text-gray-900 dark:text-gray-100 rounded-lg shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
           aria-label={`${label} Year`}
         >
+          <option value="" disabled hidden>{language === 'ne' ? 'वर्ष' : 'Year'}</option>
           {yearOptions.map(year => <option key={year} value={year}>{year} {t.bs}</option>)}
         </select>
         <select
@@ -101,6 +102,7 @@ const NepaliDateInput: React.FC<NepaliDateInputProps> = ({ id, label, value, onC
           className="block w-full py-2.5 px-3 border border-gray-300 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800 text-gray-900 dark:text-gray-100 rounded-lg shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
           aria-label={`${label} Month`}
         >
+          <option value="" disabled hidden>{language === 'ne' ? 'महिना' : 'Month'}</option>
           {NEPALI_MONTHS.map((month: NepaliMonth) => (
             <option key={month.value} value={month.value}>
               {language === 'ne' ? month.neName : month.name}
@@ -115,6 +117,7 @@ const NepaliDateInput: React.FC<NepaliDateInputProps> = ({ id, label, value, onC
           className="block w-full py-2.5 px-3 border border-gray-300 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800 text-gray-900 dark:text-gray-100 rounded-lg shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
           aria-label={`${label} Day`}
         >
+          <option value="" disabled hidden>{language === 'ne' ? 'दिन' : 'Day'}</option>
           {daysInMonth.map(day => <option key={day} value={day}>{day}</option>)}
         </select>
       </div>
